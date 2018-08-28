@@ -11,3 +11,8 @@
  - [ ] OAUTH for slackbot
  - [ ] configure NLP API endpoint
  - [ ] train NLP model using dataset
+ - [ ] tests
+	- [ ] easy
+		how to iterate array in python
+	- [ ] medium
+	- [ ] hard

@@ -9,3 +9,7 @@ https://docs.aws.amazon.com/lambda/latest/dg/with-s3-example-deployment-pkg.html
 # using google cloud client libs
 
 https://cloud.google.com/natural-language/docs/quickstart-client-libraries#client-libraries-usage-python
+
+# stackoverflow search API
+
+https://api.stackexchange.com/docs/advanced-search
