@@ -10,20 +10,24 @@ import urllib
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 
 # Define the URL of the targeted Slack API resource.
-SLACK_URL = None # "https://slack.com/api/chat.postMessage"
+SLACK_URL = "https://slack.com/api/chat.postMessage"
 
-def lambda_handler(event, context):
+def lambda_handler(data, context):
+#    return 'lambda works'
     # TODO implement
-    slack_event = data['event']
+    if 'event' in data:
+        slack_event = data['event']
+    else:
+        return '500 InvalidAction'
     if "bot_id" in slack_event:
         logging.warn("Ignore bot event")
     else:
         text = slack_event["text"]
         channel_id = slack_event["channel"]
         
-        response = None # TODO : hit NLP API
+        response = None# TODO : hit NLP API
         # TODO : decode response
-        found_comments = None # TODO : FIND COMMENT
+        found_comments = None# TODO : FIND COMMENT
         
         data = urllib.parse.urlencode(
             (
