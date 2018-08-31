@@ -63,15 +63,9 @@ class Parsed:
         self.text = text
         self.found = found
 
-class PostAnswer:
-    def __init__(self, electedAnswer, buckets, bestAnswers):
-        self.electedAnswer = electedAnswer
-        self.buckets = buckets
-        self.bestAnswers = bestAnswers
-
 def match_answer(array):
     possible = []
-    print array
+    array = array.split()
     cursor = connection.cursor()
     sql = "SELECT * FROM answers"
     cursor.execute(sql)
@@ -150,14 +144,25 @@ def handle_command(command, channel):
             text="42"
         )
     elif command:
-            r = requests.post(url=URL, json=data)
+            p = requests.post(url=URL, json=data)
             # print(r.status_code, r.reason, r.json())
             payload = {"question": command}
             r = requests.get("https://1mg1v0jpv0.execute-api.us-west-2.amazonaws.com/dev/process", json=payload)
             ret = match_answer(r.json())
             for item in ret:
-                print item.text
-                print "\n\n"
+                print item.text, "\n\n"
+            buckets = []
+            bestAnswers = []
+            toggle = 0
+            electedAnswer = ""
+            for item in ret:
+                if item.isElected and toggle == 0:
+                    electedAnswer = item
+                    toggle = 1
+                buckets.append(item.group_id)
+                bestAnswers.append(item.answer_id)
+            finalData = {"electedAnswer": electedAnswer, "buckets": buckets, "bestAnswers": bestAnswers}
+            p = requests.post(url=URL, json=finalData)
     else:
         slack_client.api_call (
             "chat.postMessage",
