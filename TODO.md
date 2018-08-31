@@ -10,6 +10,8 @@
 
  - [ ] OAUTH for slackbot
  - [ ] configure NLP API endpoint
+ - [ ] build dataset
+ - [ ] populate db
  - [ ] train NLP model using dataset
  - [ ] tests
 	- [ ] easy

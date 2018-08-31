@@ -1,2 +1,5 @@
 config.sh
 .xbrain-gcp-privkey.json
+.DS_STORE
+._.DS_STORE
+.~

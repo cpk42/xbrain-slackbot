@@ -64,7 +64,6 @@ def get_prediction(content):
     request = prediction_client.predict(name, payload, params)
     return request  # waits till request is returned
 
-
 def lambda_handler(data, context):
     '''
     performs four separate requests:
@@ -80,13 +79,16 @@ def lambda_handler(data, context):
         to print the elected answer
     '''
 
-    slack_event = data['event']
+    if 'event' in data:
+        slack_event = data['event']
+    else:
+        return '500 InvalidAction, please supply {\'event\':{\'text\':...},...}'
     if "bot_id" in slack_event:
         logging.warn("Ignore bot event")
     else:
         text = slack_event["text"]
         channel_id = slack_event["channel"]
-        
+
         # returns a matching category
         # from the question
         response = get_prediction(text)
@@ -102,12 +104,12 @@ def lambda_handler(data, context):
         # get entities from question
         result = entities_text(text)
 
-#        print(result) # debug
+#        print(result)                  # debug
 
         l = []
         for item in result:
             l.append(' '.join(item))
-#        print(l)
+#        print(l)                       # debug
         keywords = ' '.join(l)
 
         # TODO : db query for all
