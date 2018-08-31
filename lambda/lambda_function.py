@@ -6,6 +6,7 @@ import os
 import six
 import urllib
 import logging
+import pymysql
 from botocore.vendored import requests 
 from google.cloud.language import enums, types
 from google.cloud import automl_v1beta1, language
@@ -17,8 +18,10 @@ GCP_TOK = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
 GCP_URL = os.environ['GCP_URL']
 PROJ_ID = os.environ['PROJ_ID']
 MODL_ID = os.environ['MODL_ID']
-
-DB = None # connect to db
+DB_HOST = os.environ['DB_HOST'] 
+DB_USER = os.environ['DB_USER']
+DB_PASS = os.environ['DB_PASS']
+DAT_BAS = os.environ['DAT_BAS']
 
 def entities_text(text):
     """Detects entities in the text."""
@@ -78,48 +81,64 @@ def lambda_handler(data, context):
         3. one requests is made to our xbrian slackbot
         to print the elected answer
     '''
+#    CONN = None
+#    with pymysql.connect(DB_HOST, DB_USER, DB_PASS, DAT_BAS) as conn:
+#    with pymysql.connect(
+#            'train-data.ce7eghpctu0b.us-west-2.rds.amazonaws.com',
+#            'cpk42', 'xbrainhacks', 'train_data') as cursor:
 
-    if 'event' in data:
-        slack_event = data['event']
+#    import pymysql
+    try:
+        with pymysql.connect(host=DB_HOST,
+                             user=DB_USER,
+                             password=DB_PASS,
+                             db=DAT_BAS,
+                             connect_timeout=20) as cursor:
+            print('connection established')
+    except Exception as e:
+        print(e)
+#        sql = "SELECT * FROM questions limit 10"
+#        cursor.execute(sql)
+#        print ("cursor.description: ", cursor.description)
+#        for row in cursor:
+#            print(row)
+
+    if 'question' in data:
+        text = data['question']
     else:
-        return '500 InvalidAction, please supply {\'event\':{\'text\':...},...}'
-    if "bot_id" in slack_event:
-        logging.warn("Ignore bot event")
-    else:
-        text = slack_event["text"]
-        channel_id = slack_event["channel"]
+        return '500 InvalidAction, please supply {\'question\':<text>}'
+#    text = slack_event["text"]
+#    channel_id = slack_event["channel"]
 
         # returns a matching category
         # from the question
-        response = get_prediction(text)
+    response = get_prediction(text)
 
-        score = 0.0
-        category = None
-        # parse reponse for matching category
-        for item in response.payload:
-            if item.classification.score > score:
-                score = item.classification.score
-                category = item.display_name
+    score = 0.0
+    category = None
+    # parse reponse for matching category
+    for item in response.payload:
+        if item.classification.score > score:
+            score = item.classification.score
+            category = item.display_name
                
         # get entities from question
-        result = entities_text(text)
+    result = entities_text(text)
 
 #        print(result)                  # debug
 
-        l = []
-        for item in result:
-            l.append(' '.join(item))
-#        print(l)                       # debug
-        keywords = ' '.join(l)
+    l = []
+    for item in result:
+        l.append(' '.join(item))
+    print(l)                       # debug
+    keywords = ' '.join(l)
 
-        # TODO : db query for all
-        # questions in category
-        answer = 'no answer found'
+    answer = 'no answer found' # TODO : db query for all questions in category
 
-        data = {'token':BOT_TOK,'text':'The question is: '+text+' , and the answer is: '+answer,'desc':'None'}
+    data = {'token':BOT_TOK,'text':keywords}
 
-        r = requests.post(SLK_URL, json=data)
+    r = requests.post(SLK_URL, json=data)
         
     # Everything went fine.
-    return "200 OK"
+    return keywords
 
