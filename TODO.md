@@ -1,20 +1,20 @@
 # TODO
 
  - [ ] lambda interactions done
-	- [ ] send packet to lambda
-	- [ ] lambda recieves
-	- [ ] lambda queries GCP
-	- [ ] lambda recieves response
-	- [ ] lambda scrapes stack
-	- [ ] lambda returns response to slack
+	- [x] send packet to lambda
+	- [x] lambda recieves
+	- [x] lambda queries GCP
+	- [x] lambda recieves response
+	- [ ] lambda queries db
+	- [x] lambda returns response to slack
 
- - [ ] OAUTH for slackbot
- - [ ] configure NLP API endpoint
- - [ ] build dataset
- - [ ] populate db
- - [ ] train NLP model using dataset
+ - [x] OAUTH for slackbot
+ - [x] configure NLP API endpoint
+ - [x] build dataset
+ - [x] populate db
+ - [x] train NLP model using dataset
  - [ ] tests
-	- [ ] easy
+	- [x] easy
 		how to iterate array in python
 	- [ ] medium
 	- [ ] hard
