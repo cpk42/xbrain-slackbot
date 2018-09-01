@@ -51,7 +51,7 @@ respond6 = 'ubuntu'
 import pymysql
 connection = pymysql.connect(host='35.233.149.140',
                              user='cpk42',
-                             password='xbrainhacks',
+                             password=os.environ.get('GOOGLE_PASSWORD'),
                              db='train_data')
 
 #<answer answer_id="5524" group="2136" isElectedAnswer="0" text="&lt;p&gt;It seems fine by me. I would say that the structure is fully normalized.&lt;/p&gt;&#10;" />
